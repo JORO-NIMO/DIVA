@@ -9,7 +9,7 @@ export default function AIChatAssistant() {
   ]);
   const [input, setInput] = useState('');
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -17,21 +17,25 @@ export default function AIChatAssistant() {
     setMessages([...messages, { text: userMessage, isUser: true }]);
     setInput('');
 
-    // Mock AI Response
-    setTimeout(() => {
-      let aiResponse = "I can help with that! Could you tell me a bit more about what you're looking for?";
-      if (userMessage.toLowerCase().includes('price') || userMessage.toLowerCase().includes('cost')) {
-        aiResponse = "We have watches ranging from affordable luxury at $85 to premium pieces at $250+. What's your budget?";
-      } else if (userMessage.toLowerCase().includes('warranty')) {
-        aiResponse = "All our watches come with a 2-year comprehensive warranty.";
-      } else if (userMessage.toLowerCase().includes('shipping')) {
-        aiResponse = "We offer free shipping on orders over $100!";
-      } else if (userMessage.toLowerCase().includes('recommend') || userMessage.toLowerCase().includes('suggest')) {
-        aiResponse = "For a versatile look, I recommend our 'Classic Leather' model. It's perfect for both casual and formal occasions.";
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
 
-      setMessages((prev) => [...prev, { text: aiResponse, isUser: false }]);
-    }, 1000);
+      const data = await response.json();
+      setMessages((prev) => [...prev, { text: data.reply, isUser: false }]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages((prev) => [...prev, { text: "I'm having trouble connecting right now. Please try again later.", isUser: false }]);
+    }
   };
 
   return (

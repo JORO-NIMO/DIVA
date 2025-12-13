@@ -12,7 +12,7 @@ export default function InstagramFeed() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold text-text-charcoal">Follow Us on Instagram</h2>
-          <p className="mt-2 text-primary-gold font-medium">@DivinesWristWear</p>
+          <p className="mt-2 text-primary-gold font-medium">@kamikazi_divine_</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {posts.map((src, index) => (
