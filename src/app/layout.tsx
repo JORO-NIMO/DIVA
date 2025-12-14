@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AIChatAssistant from "@/components/AIChatAssistant";
+import { AuthProvider } from "@/lib/auth-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +28,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://app.dante-ai.com/bubble-embed.js?kb_id=e2ca56e3-43b9-4fe4-8913-ba07d37f16a9&token=6ad8945d-dbb4-4790-80b3-cd31a3b224bf&modeltype=gpt-4-omnimodel-mini&tabs=false"></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
-        <AIChatAssistant />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <AIChatAssistant />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,10 +2,19 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
 import Logo from './Logo';
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { user, logout, loading } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -19,6 +28,7 @@ export default function Navbar() {
           <div className="hidden md:flex space-x-8 items-center">
             <Link href="/" className="text-gray-700 hover:text-primary-gold transition-colors uppercase text-sm font-medium">Home</Link>
             <Link href="/shop" className="text-gray-700 hover:text-primary-gold transition-colors uppercase text-sm font-medium">Shop</Link>
+            <Link href="/listings" className="text-gray-700 hover:text-primary-gold transition-colors uppercase text-sm font-medium">Listings</Link>
             <Link href="/about" className="text-gray-700 hover:text-primary-gold transition-colors uppercase text-sm font-medium">About</Link>
             <Link href="/contact" className="text-gray-700 hover:text-primary-gold transition-colors uppercase text-sm font-medium">Contact</Link>
           </div>
@@ -44,9 +54,34 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </button>
+            {!loading && (
+              <>
+                {user ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm text-gray-700">{user.email}</span>
+                    <button
+                      onClick={handleLogout}
+                      className="text-sm text-primary-gold hover:text-secondary-gold font-medium"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-4">
+                    <Link href="/auth/login" className="text-sm text-primary-gold hover:text-secondary-gold font-medium">
+                      Sign In
+                    </Link>
+                    <Link href="/auth/register" className="text-sm bg-primary-gold text-white px-3 py-1 rounded hover:bg-secondary-gold">
+                      Register
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
     </nav>
   );
 }
+
