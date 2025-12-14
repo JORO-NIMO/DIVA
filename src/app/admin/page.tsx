@@ -1,9 +1,61 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  imageSrc: string;
+  description?: string;
+}
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isAdding, setIsAdding] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    category: 'Luxury',
+    price: '',
+    imageSrc: '',
+    description: ''
+  });
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch products', error);
+    }
+  };
+
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct),
+      });
+      if (res.ok) {
+        setIsAdding(false);
+        setNewProduct({ name: '', category: 'Luxury', price: '', imageSrc: '', description: '' });
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Failed to add product', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -38,12 +90,78 @@ export default function AdminPage() {
           <div className="bg-white shadow sm:rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium text-gray-900">Product Management</h2>
-              <button className="bg-primary-gold text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-secondary-gold">
-                Add New Product
+              <button 
+                onClick={() => setIsAdding(!isAdding)}
+                className="bg-primary-gold text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-secondary-gold"
+              >
+                {isAdding ? 'Cancel' : 'Add New Product'}
               </button>
             </div>
+
+            {isAdding && (
+              <form onSubmit={handleAddProduct} className="mb-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                  <div className="sm:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700">Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={newProduct.name}
+                      onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" 
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700">Category</label>
+                    <select 
+                      value={newProduct.category}
+                      onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    >
+                      <option>Luxury</option>
+                      <option>Sporty</option>
+                      <option>Casual</option>
+                      <option>Ladies</option>
+                      <option>Men</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700">Price</label>
+                    <input 
+                      type="number" 
+                      required
+                      value={newProduct.price}
+                      onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" 
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700">Image URL</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={newProduct.imageSrc}
+                      onChange={(e) => setNewProduct({...newProduct, imageSrc: e.target.value})}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" 
+                    />
+                  </div>
+                  <div className="sm:col-span-6">
+                    <label className="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea 
+                      value={newProduct.description}
+                      onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" 
+                    />
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700">
+                    Save Product
+                  </button>
+                </div>
+              </form>
+            )}
             
-            {/* Placeholder for Product List */}
             <div className="border border-gray-200 rounded-md overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -56,24 +174,22 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {/* Mock Row */}
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Royal Gold Chrono</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Luxury</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$250.00</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" className="text-primary-gold hover:text-secondary-gold">Edit</a>
-                    </td>
-                  </tr>
+                  {products.map((product) => (
+                    <tr key={product.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.category}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="#" className="text-primary-gold hover:text-secondary-gold">Edit</a>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <p className="mt-4 text-sm text-gray-500 italic">
-              Note: This is a static admin view. To make this functional, we need to connect a database (like PostgreSQL or MongoDB) or a CMS.
-            </p>
           </div>
         )}
 
@@ -104,3 +220,4 @@ export default function AdminPage() {
     </div>
   );
 }
+

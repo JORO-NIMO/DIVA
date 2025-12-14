@@ -21,8 +21,8 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div className="ml-3 text-base text-gray-500">
-                  <p>+256 700 000 000</p>
-                  <p className="mt-1">Mon-Fri 9am to 6pm</p>
+                  <p>+256 753820844</p>
+                  <p className="mt-1">Mon-Sun 24/7</p>
                 </div>
               </div>
               <div className="flex items-start">
@@ -32,7 +32,7 @@ export default function ContactPage() {
                   </svg>
                 </div>
                 <div className="ml-3 text-base text-gray-500">
-                  <p>support@divineswristwear.com</p>
+                  <p>joronimoamanya@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start">
@@ -48,7 +48,7 @@ export default function ContactPage() {
             </div>
 
             <div className="mt-8">
-              <a href="https://wa.me/256700000000" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+              <a href="https://wa.me/256753820844" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
                 Chat on WhatsApp
               </a>
             </div>

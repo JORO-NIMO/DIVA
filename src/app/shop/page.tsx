@@ -1,16 +1,11 @@
 import ProductCard from '@/components/ProductCard';
+import { prisma } from '@/lib/prisma';
 
-// Mock Data
-const products = [
-  { id: '1', name: 'Royal Gold Chrono', price: 250.00, category: 'Luxury', imageSrc: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-  { id: '2', name: 'Midnight Sport', price: 120.00, category: 'Sporty', imageSrc: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-  { id: '3', name: 'Classic Leather', price: 85.00, category: 'Casual', imageSrc: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-  { id: '4', name: 'Rose Gold Elegance', price: 180.00, category: 'Ladies', imageSrc: 'https://images.unsplash.com/photo-1595935736128-db1f0a261963?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-  { id: '5', name: 'Silver Diver', price: 210.00, category: 'Men', imageSrc: 'https://images.unsplash.com/photo-1619134778706-7015533a6150?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-  { id: '6', name: 'Minimalist Black', price: 95.00, category: 'Casual', imageSrc: 'https://images.unsplash.com/photo-1495856458515-0637185db551?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-];
+export const dynamic = 'force-dynamic';
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const products = await prisma.product.findMany();
+
   return (
     <div className="bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
